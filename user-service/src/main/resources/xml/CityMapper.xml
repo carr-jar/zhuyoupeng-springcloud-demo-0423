@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhuyoupeng.userservice.mapper.CityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhuyoupeng.userservice.bean.City">
+        <result column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="parent_id" property="parent_id" />
+    </resultMap>
+    <resultMap id="mapVo" type="com.zhuyoupeng.userservice.bean.CityVo">
+        <result column="provinceId" property="id" />
+        <result column="ProvinceName" property="name" />
+        <collection property="list" ofType="com.zhuyoupeng.userservice.bean.CityVo">
+            <result column="cityId" property="id" />
+            <result column="cityName" property="name" />
+        </collection>
+    </resultMap>
+    <select id="clist" resultMap="mapVo">
+        SELECT
+          c1.`id` provinceId,
+          c1.`name` provinceName,
+          c2.`id` cityId,
+          c2.`name` cityName
+        FROM
+          city c1
+          LEFT JOIN city c2
+            ON c1.`id` = c2.`parent_id`
+            WHERE c1.`parent_id`=0
+    </select>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, parent_id
+    </sql>
+
+</mapper>

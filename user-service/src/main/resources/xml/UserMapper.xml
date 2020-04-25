@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhuyoupeng.userservice.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhuyoupeng.userservice.bean.User">
+        <id column="uid" property="uid" />
+        <result column="username" property="username" />
+        <result column="birthday" property="birthday" />
+        <result column="createtime" property="createtime" />
+        <result column="imgName" property="imgName" />
+        <result column="provinceId" property="provinceId" />
+        <result column="cityId" property="cityId" />
+    </resultMap>
+    <resultMap id="mapVo" type="com.zhuyoupeng.userservice.bean.UserVo" extends="BaseResultMap">
+        <result column="provinceName" property="provinceName" />
+        <result column="cityName" property="cityName" />
+    </resultMap>
+    <select id="getPage" resultMap="mapVo">
+        SELECT
+          u.*,
+          c1.name provinceName,
+          c2.`name` cityName
+        FROM
+          `user` u
+          LEFT JOIN city c1
+            ON u.`provinceId` = c1.`id`
+          LEFT JOIN city c2
+            ON u.`cityId` = c2.`id`
+        <where>
+            <if test="vo!=null">
+                <if test="vo.username!=null and vo.username!=''">
+                    u.username like concat('%',#{vo.username},'%')
+                </if>
+            </if>
+        </where>
+    </select>
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        uid, username, birthday, createtime, imgName, provinceId, cityId
+    </sql>
+
+</mapper>
